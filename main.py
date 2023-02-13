@@ -1,5 +1,6 @@
 import asyncio
 import logging
+import os
 
 import uvicorn
 from fastapi import FastAPI
@@ -16,8 +17,9 @@ logging.basicConfig(
     format='%(asctime)s, %(levelname)s, %(message)s, %(name)s'
 )
 
-ADRESS: str = 'TCPIP0::169.254.129.17::1026::SOCKET'  # IP прибора добавить из env
-PATH: str = ''  # путь до NI-VISA на компьютере # добавить из env
+# IP прибора
+ADRESS: str = os.getenv('ADDRESS', 'TCPIP0::169.254.129.17::1026::SOCKET')
+PATH: str = os.getenv('PATH', '')  # путь до NI-VISA на компьютере
 DELAY: float = 0.3  # задержка между командами
 
 logger = logging.getLogger(__name__)
@@ -35,11 +37,11 @@ async def app_startup():
 
 
 @app.post('/switched_on/')
-async def switched_on(params: SwitchedOn):
+async def switched_on(params: SwitchedOn,):
     """Включение канала"""
     logger.info(f'Включение канала {params.ch}')
     try:
-        gpp_unit.set_current(params.ch, params.current)        
+        gpp_unit.set_current(params.ch, params.current)
         await asyncio.sleep(DELAY)
         logger.info(f'Установка значения тока {params.current}')
     except Exception as error:
@@ -91,5 +93,6 @@ async def get_chennel_state(chanel: ChanelNumber):
                             status_code=503)
     return JSONResponse(content=response)
 
+
 if __name__ == '__main__':
-    uvicorn.run(app, host="0.0.0.0", port=8000) # удалить перед отправкой 
+    uvicorn.run(app, host="0.0.0.0", port=8000)

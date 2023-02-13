@@ -1,4 +1,4 @@
-﻿from typing import Dict, List
+﻿from typing import Dict
 
 from pydantic import BaseModel, Field, root_validator
 
@@ -28,7 +28,7 @@ class SwitchedOn(BaseModel):
         title='Значение напряжения',
         ge=0.000,
         le=32.000
-    )  
+    )
 
     @root_validator()
     def switch_on_validation(cls, values):

@@ -25,7 +25,6 @@ class GppUnit:
             self.unit = resource_manager.open_resource(self.address)
         except VisaIOError:
             logger.critical('Ошибка подключения к прибору')
-
         else:
             logger.info('Соеденинение установлено')
 
